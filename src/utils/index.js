@@ -35,8 +35,24 @@ export function request (url) {
   })
 }
 
+export function showModal (title, content) {
+  wx.showModal({
+    title,
+    content,
+    showCancel: false
+  })
+}
+export function showSuccess (text) {
+  wx.showToast({
+    title: text,
+    icon: 'success'
+  })
+}
+
 export default {
   formatNumber,
   formatTime,
-  request
+  request,
+  showModal,
+  showSuccess
 }
