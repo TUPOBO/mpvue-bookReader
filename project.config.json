@@ -8,9 +8,10 @@
 		"newFeature": true
 	},
 	"miniprogramRoot": "./dist/",
+	"qcloudRoot": "./server/",
 	"compileType": "miniprogram",
-	"appid": "358fwx36711b72e8c6a0e2",
-	"projectname": "mpvue-bookreadwe",
+	"appid": "wx36711b72e8c6a0e2",
+	"projectname": "mpvue-bookreader",
 	"condition": {
 		"search": {
 			"current": -1,
