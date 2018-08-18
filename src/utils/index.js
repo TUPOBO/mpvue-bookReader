@@ -1,3 +1,5 @@
+import config from '../config/config'
+
 function formatNumber (n) {
   const str = n.toString()
   return str[1] ? str : `0${str}`
@@ -18,7 +20,23 @@ export function formatTime (date) {
   return `${t1} ${t2}`
 }
 
+export function request (url) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: config.host + url,
+      success: function (res) {
+        if (res.data.code === 0) {
+          resolve(res.data)
+        } else {
+          reject(res.data)
+        }
+      }
+    })
+  })
+}
+
 export default {
   formatNumber,
-  formatTime
+  formatTime,
+  request
 }

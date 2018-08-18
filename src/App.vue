@@ -1,11 +1,12 @@
 <script>
+import {request} from './utils/index'
 export default {
-  created () {
-    console.log('小程序启动了')
+  async created () {
+    const data = await request('/weapp/test')
+    console.log(data)
   }
 }
 </script>
 
 <style>
-
 </style>
