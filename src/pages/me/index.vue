@@ -4,24 +4,24 @@
       <img :src="userinfo.avatarUrl" alt="">
       <p>{{userinfo.nickName}}</p>
     </div>
-    <YearProgress></YearProgress>
     <button v-if='userinfo.openId' @click='scanBook' class='btn'>添加图书</button>
     <button v-else open-type="getUserInfo" lang="zh_CN" class='btn' @getuserinfo="login">点击登录</button>
-
+    <YearProgress></YearProgress>
   </div>
 </template>
 <script>
   import qcloud from 'wafer2-client-sdk'
-  // import YearProgress from '@/components/YearProgress'
+  import YearProgress from '@/components/YearProgress'
   import {
     showSuccess,
-    showModal
+    showModal,
+    post
   } from '@/utils/index'
   import config from '@/config/config'
   export default {
-    // components: {
-    //   YearProgress
-    // },
+    components: {
+      YearProgress
+    },
     data () {
       return {
         userinfo: {
@@ -31,13 +31,15 @@
       }
     },
     methods: {
-      // async addBook (isbn) {
-      //   const res = await post('/weapp/addbook', {
-      //     isbn,
-      //     openid: this.userinfo.openId
-      //   })
-      //   showModal('添加成功', `${res.title}添加成功`)
-      // },
+      async addBook (isbn) {
+        const res = await post('/weapp/addbook', {
+          isbn,
+          openid: this.userinfo.openId
+        })
+        if (res.code === 0 && res.data.title) {
+          showModal('添加成功', `《${res.data.title}》添加成功`)
+        }
+      },
       scanBook () {
         wx.scanCode({
           success: (res) => {

@@ -20,19 +20,30 @@ export function formatTime (date) {
   return `${t1} ${t2}`
 }
 
-export function request (url) {
+function request (url, method, data) {
   return new Promise((resolve, reject) => {
     wx.request({
+      data,
+      method,
       url: config.host + url,
       success: function (res) {
         if (res.data.code === 0) {
           resolve(res.data)
         } else {
+          showModal('失败', res.data.data.msg)
           reject(res.data)
         }
       }
     })
   })
+}
+
+export function get (url, data) {
+  return request(url, 'GET', data)
+}
+
+export function post (url, data) {
+  return request(url, 'POST', data)
 }
 
 export function showModal (title, content) {
@@ -52,7 +63,8 @@ export function showSuccess (text) {
 export default {
   formatNumber,
   formatTime,
-  request,
+  get,
+  post,
   showModal,
   showSuccess
 }
