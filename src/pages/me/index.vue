@@ -149,21 +149,20 @@
   }
 </script>
 
-<style lang='scss'>
+<style>
   .container {
     padding: 0 30rpx;
-
+}
     .userinfo {
       margin-top: 100rpx;
       text-align: center;
-
+}
       img {
         width: 150rpx;
         height: 150rpx;
         margin: 20rpx;
         border-radius: 50%;
       }
-    }
-  }
+
 
 </style>
