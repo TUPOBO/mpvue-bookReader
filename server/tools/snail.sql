@@ -10,5 +10,6 @@ create table books(
   price VARCHAR(100),
   rate float,
   tags VARCHAR(100),
-  author VARCHAR(100)
+  author VARCHAR(100),
+  count int default 0
 )
