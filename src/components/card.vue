@@ -1,7 +1,7 @@
 <template>
   <a :href="detailUrl">
     <div class="book-card">
-    <div class="thumb">
+    <div class="thumb" @click.stop="preview">
       <img :src="book.image" alt="" mode="aspectFit" class="img">
     </div>
     <div class="detail">
@@ -12,8 +12,8 @@
         <div class="left">{{book.title}}</div>
       </div>
       <div class="row">
-        <div class="right">浏览量：</div>
-        <div class="left">{{book.author}}</div>
+        <div class="right">浏览量：{{book.count}}</div>
+        <div class="left">{{book.author?book.author:'未知'}}</div>
       </div>
       <div class="row">
         <div class="right">{{book.user_info.nickName}}</div>
@@ -35,6 +35,14 @@
       detailUrl () {
         return '/pages/detail/main?id=' + this.book.id
       }
+    },
+    methods: {
+      preview () {
+        wx.previewImage({
+          // current: 'String', // 当前显示图片的链接，不填则默认为 urls 的第一张
+          urls: [this.book.image]
+        })
+      }
     }
   }
 </script>
@@ -45,7 +53,7 @@
     overflow: hidden;
     margin-top: 5px;
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .thumb {
