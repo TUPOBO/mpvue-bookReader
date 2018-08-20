@@ -26,4 +26,11 @@ export default {
 .btn:active {
   background: #a22A22;
 }
+.text-primary {
+  color: #EA5149;
+}
+.text-footer {
+  text-align: center;
+  font-size: 12px;
+}
 </style>
