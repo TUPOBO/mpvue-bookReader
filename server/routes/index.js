@@ -46,4 +46,7 @@ router.get('/bookdetail', controllers.bookdetail)
 
 // --- 获取轮播列表 --- //
 router.get('/top', controllers.top)
+
+// --- 添加图书评论 --- //
+router.post('/addcomment', controllers.addcomment)
 module.exports = router

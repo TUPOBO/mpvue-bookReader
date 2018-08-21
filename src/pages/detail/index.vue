@@ -98,7 +98,7 @@
       async addComment () {
         const data = {
           openid: this.userInfo.openId,
-          bookId: this.bookId,
+          bookid: this.bookId,
           comment: this.comment,
           phone: this.phone,
           location: this.location
