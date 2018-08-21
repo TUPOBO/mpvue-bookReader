@@ -19,6 +19,8 @@ module.exports = async (ctx) => {
   // })
 
   ctx.state.data = Object.assign({}, detail, {
+    tags: detail.tags.split(','),
+    summary: detail.summary.split('\n'),
     user_info: {
       name: info.nickName,
       image: info.avatarUrl
