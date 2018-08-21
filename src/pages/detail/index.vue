@@ -1,13 +1,17 @@
 <template>
   <div>
-    {{bookId}}
+    <BookInfo v-if="info.data" :info="info.data"></BookInfo>
     <!-- {{info.count}} -->
   </div>
 </template>
 
 <script>
 import { get } from '@/utils'
+import BookInfo from '@/components/BookInfo'
 export default {
+  components: {
+    BookInfo
+  },
   data () {
     return {
       bookId: '',
@@ -20,7 +24,8 @@ export default {
       wx.setNavigationBarTitle({
         title: `《 ${info.data.title} 》`
       })
-      console.log(info)
+      this.info = info
+      console.log(this.info.data)
     }
   },
   mounted () {
