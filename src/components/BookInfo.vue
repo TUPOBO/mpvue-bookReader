@@ -52,7 +52,7 @@
 
   .thumb {
     width: 750rpx;
-    height: 500rpx;
+    height: 550rpx;
     overflow: hidden;
     position: relative;
   }

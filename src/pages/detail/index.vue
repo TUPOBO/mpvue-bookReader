@@ -14,12 +14,15 @@
       <switch color="#EA5A49" :check="phone" @change="getPhone"></switch>
       <span v-if="phone" class='text-primary'>{{phone}}</span>
     </div>
+    <button class="btn" @click='addComment'>
+      添加评论
+    </button>
   </div>
 </template>
 
 <script>
   import {
-    get
+    get, post, showModal
   } from '@/utils'
   import BookInfo from '@/components/BookInfo'
   export default {
@@ -28,6 +31,7 @@
     },
     data () {
       return {
+        userInfo: {},
         bookId: '',
         info: {},
         comment: '',
@@ -90,11 +94,35 @@
         } else {
           this.phone = ''
         }
+      },
+      async addComment () {
+        const data = {
+          openid: this.userInfo.openId,
+          bookId: this.bookId,
+          comment: this.comment,
+          phone: this.phone,
+          location: this.location
+        }
+        if (this.comment) {
+          try {
+            await post('/weapp/addcomment', data)
+            this.comment = ''
+          } catch (error) {
+            showModal('评论失败', error.msg)
+          }
+        }
+
+        console.log(data)
       }
     },
     mounted () {
       this.bookId = this.$root.$mp.query.id
       this.getDetail()
+      const userInfo = wx.getStorageSync('userinfo')
+      console.log(userInfo)
+      if (userInfo) {
+        this.userInfo = userInfo
+      }
     }
   }
 </script>
@@ -113,6 +141,13 @@
 
   .location {
     margin: 10px 0;
+    font-size: 12px;
   }
+
+  .phone {
+    font-size: 12px;
+    margin: 10px 0;
+  }
+
 
 </style>
