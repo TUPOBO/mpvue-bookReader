@@ -8,19 +8,40 @@
         <div class="author">{{info.author?info.author:"未知"}}</div>
       </div>
     </div>
+    <div class="detail">
+      <img class="avatar" :src="userInfo.image" mode="aspectFit" alt="">
+      {{userInfo.name}}
+      <div class="right text-primary">
+        {{info.rate}}分
+        <rate :value="info.rate"></rate>
+      </div>
+    </div>
+    <div class="detail">
+      {{info.publisher}}
+      <div class="right">{{info.price}}</div>
+    </div>
   </div>
 </template>
 
 <script>
+  import rate from '@/components/rate'
   export default {
-    props: ['info']
+    components: {
+      rate
+    },
+    props: ['info'],
+    computed: {
+      userInfo () {
+        return this.info.user_info || {}
+      }
+    }
+
   }
 </script>
 
 <style scoped>
   .bookInfo {
-    text-align: center;
-    font-size: 114px;
+    font-size: 14px;
   }
 
   .thumb {
@@ -46,17 +67,36 @@
   .info {
     color: #000;
     position: absolute;
-    width: 100%;
-    left: 0;
+    width: 60%;
+    margin: 0 auto;
+    left: 50%;
     top: 370rpx;
+    transform: translateX(-50%);
     text-align: center;
   }
 
   .title {
-    font-size: 20px;
+    font-size: 18px;
+    margin-bottom: 5px;
+    margin-top: 10px;
   }
 
   .author {
     font-size: 12px;
+  }
+
+  .right {
+    float: right;
+  }
+
+  .detail {
+    padding: 5px 10px
+  }
+
+  .avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    vertical-align: middle;
   }
 </style>
