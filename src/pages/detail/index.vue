@@ -7,7 +7,7 @@
     <div class="location">
       地理位置：
       <switch color='#EA5A49' :check="location" @change='getGps'></switch>
-      <span class='text-primary'>{{location}}</span>
+      <span v-if="location" class='text-primary'>{{location}}</span>
     </div>
     <div class="phone">
       手机型号：
@@ -32,6 +32,7 @@
         info: {},
         comment: '',
         location: '',
+        locationAjax: '',
         phone: ''
       }
     },
@@ -46,7 +47,40 @@
         this.info = info
         console.log(this.info.data)
       },
-      getGps () {},
+      getGps (e) {
+        if (e.target.value) {
+          this.getLocation()
+          console.log(this.location)
+        } else {
+          this.location = ''
+        }
+      },
+      getLocation () {
+        const ak = 'lWn1ymAkmCcPvTh4O4Xsp3fOBDjKXyru'
+        let url = 'http://api.map.baidu.com/geocoder/v2/'
+        wx.getLocation({
+          type: 'wgs84', // 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于 wx.openLocation 的坐标
+          success: (res) => {
+            wx.request({
+              url,
+              data: {
+                location: `${res.latitude}, ${res.longitude}`,
+                output: 'json',
+                ak
+              },
+              method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
+              // header: {}, // 设置请求的 header
+              success: (res) => {
+                if (res.data.status === 0) {
+                  this.location = res.data.result.addressComponent.city
+                } else {
+                  this.location = '未知地址'
+                }
+              }
+            })
+          }
+        })
+      },
       getPhone (e) {
         if (e.target.value) {
           console.log('xinhao')
