@@ -14,7 +14,7 @@ export default {
 .btn {
   color: white;
   background: #EA5A49;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   padding-left: 10px;
   padding-right: 10px;
   border-radius: 5px;

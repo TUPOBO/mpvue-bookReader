@@ -1,33 +1,43 @@
 <template>
   <div>
     <BookInfo v-if="info.data" :info="info.data"></BookInfo>
-    <div class="comment">
+    <CommentList :comments="comments"></CommentList>
+    <div class="comment" v-if="showAdd">
       <textarea class="textarea" v-model="comment" maxlength="100" placeholder="请输入图书短评"></textarea>
+
+      <div class="location">
+        地理位置：
+        <switch color='#EA5A49' :check="location" @change='getGps'></switch>
+        <span v-if="location" class='text-primary'>{{location}}</span>
+      </div>
+      <div class="phone">
+        手机型号：
+        <switch color="#EA5A49" :check="phone" @change="getPhone"></switch>
+        <span v-if="phone" class='text-primary'>{{phone}}</span>
+      </div>
+      <button class="btn" @click='addComment'>
+        添加评论
+      </button>
     </div>
-    <div class="location">
-      地理位置：
-      <switch color='#EA5A49' :check="location" @change='getGps'></switch>
-      <span v-if="location" class='text-primary'>{{location}}</span>
+    <div v-else class="text-footer">
+      未登录或者已经评论过啦
     </div>
-    <div class="phone">
-      手机型号：
-      <switch color="#EA5A49" :check="phone" @change="getPhone"></switch>
-      <span v-if="phone" class='text-primary'>{{phone}}</span>
-    </div>
-    <button class="btn" @click='addComment'>
-      添加评论
-    </button>
+    <button open-type='share' class="btn">转发给好友</button>
   </div>
 </template>
 
 <script>
   import {
-    get, post, showModal
+    get,
+    post,
+    showModal
   } from '@/utils'
   import BookInfo from '@/components/BookInfo'
+  import CommentList from '@/components/CommentList'
   export default {
     components: {
-      BookInfo
+      BookInfo,
+      CommentList
     },
     data () {
       return {
@@ -39,6 +49,17 @@
         location: '',
         locationAjax: '',
         phone: ''
+      }
+    },
+    computed: {
+      showAdd () {
+        const haveOpenId = !this.userInfo.openId
+        const haveComment = this.comments.filter(v => v.openid === this.userInfo.openId).length
+        if (haveOpenId || haveComment) {
+          return false
+        } else {
+          return true
+        }
       }
     },
     methods: {
@@ -56,7 +77,8 @@
         const comments = await get('/weapp/commentlist', {
           bookid: this.bookId
         })
-        this.comments = comments
+        this.comments = comments.data.list
+        console.log('comments', this.comments)
       },
       getGps (e) {
         if (e.target.value) {
@@ -114,6 +136,7 @@
           try {
             await post('/weapp/addcomment', data)
             this.comment = ''
+            this.getComments()
           } catch (error) {
             showModal('评论失败', error.msg)
           }
@@ -127,6 +150,7 @@
       this.getDetail()
       this.getComments()
       const userInfo = wx.getStorageSync('userinfo')
+      wx.showShareMenu()
       console.log(userInfo)
       if (userInfo) {
         this.userInfo = userInfo
@@ -156,6 +180,5 @@
     font-size: 12px;
     margin: 10px 0;
   }
-
 
 </style>
