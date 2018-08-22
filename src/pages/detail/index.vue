@@ -31,6 +31,7 @@
     },
     data () {
       return {
+        comments: [],
         userInfo: {},
         bookId: '',
         info: {},
@@ -50,6 +51,12 @@
         })
         this.info = info
         console.log(this.info.data)
+      },
+      async getComments () {
+        const comments = await get('/weapp/commentlist', {
+          bookid: this.bookId
+        })
+        this.comments = comments
       },
       getGps (e) {
         if (e.target.value) {
@@ -118,6 +125,7 @@
     mounted () {
       this.bookId = this.$root.$mp.query.id
       this.getDetail()
+      this.getComments()
       const userInfo = wx.getStorageSync('userinfo')
       console.log(userInfo)
       if (userInfo) {
