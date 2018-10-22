@@ -49,106 +49,149 @@
           }
         })
       },
-      getWxLogin: function ({
-        encryptedData,
-        iv,
-        userinfo
-      }) {
-        const self = this
-        wx.login({
-          success: function (loginResult) {
-            console.log('loginResult', loginResult)
-            var loginParams = {
-              code: loginResult.code,
-              encryptedData: encryptedData,
-              iv: iv
-            }
-            qcloud.setLoginUrl(config.loginUrl)
-            qcloud.requestLogin({
-              loginParams,
-              success () {
-                qcloud.request({
-                  url: config.userUrl,
-                  login: true,
-                  success (userRes) {
-                    showSuccess('登录成功')
-                    wx.setStorageSync('userinfo', userRes.data.data)
-                    self.userinfo = userRes.data.data
-                    console.log(self.userinfo)
-                  }
-                })
-              },
-              fail (error) {
-                showModal('登录失败', error.message)
-              }
-            })
-          },
-          fail: function (loginError) {
-            showModal('登录失败', loginError.message)
-          }
-        })
+      loginSuccess (res) {
+        showSuccess('登录成功')
+        wx.setStorageSync('userinfo', res)
+        this.userinfo = res
       },
-      login (e) {
-        const self = this
-        // 查看是否授权
-        wx.getSetting({
-          success: function (res) {
-            // 授权信息里有用户信息
-            if (res.authSetting['scope.userInfo']) {
-              // 检查用户登录是否过期
-              wx.checkSession({
-                success: function () {
-                  // 没过期 直接成功
-                  showSuccess('登录成功')
-                },
-                fail: function () {
-                  // 过期了 重新登录 先清楚登录的状态
-                  qcloud.clearSession()
-                  // 登录态已过期，需重新登录
-                  // 登录需要的加密信息
-                  var options = {
-                    encryptedData: e.mp.detail.encryptedData,
-                    iv: e.mp.detail.iv,
-                    userinfo: e.mp.detail.userInfo
-                  }
-                  self.getWxLogin(options)
-                }
-              })
-            } else {
-              showModal('用户未授权', e.mp.detail.errMsg)
-            }
-          }
+      login () {
+        wx.showToast({
+          title: '登录中',
+          icon: 'loading'
         })
-        // let user = wx.getStorageSync('userinfo')
-        // const self = this
-        // if (!user) {
-        //   qcloud.setLoginUrl(config.loginUrl)
-        //   qcloud.login({
-        //     success: function (userinfo) {
-        //       qcloud.request({
-        //         url: config.userUrl,
-        //         login: true,
-        //         success (userRes) {
-        //           showSuccess('登录成功')
-        //           wx.setStorageSync('userinfo', userRes.data.data)
-        //           self.userinfo = userRes.data.data
-        //         }
-        //       })
-        //     }
-        //   })
-        // }
+        qcloud.setLoginUrl(config.loginUrl)
+        const session = qcloud.Session.get()
+        if (session) {
+          qcloud.loginWithCode({
+            success: res => {
+              console.log('没过期的登录', res)
+              this.loginSuccess(res)
+            },
+            fail: err => {
+              console.error(err)
+            }
+          })
+        } else {
+          qcloud.login({
+            success: res => {
+              console.log('登录成功', res)
+              this.loginSuccess(res)
+            },
+            fail: err => {
+              console.error(err)
+            }
+          })
+        }
       }
     },
     onShow () {
-      // console.log(123)
+      wx.showShareMenu()
       let userinfo = wx.getStorageSync('userinfo')
-      // console.log([userinfo])
       if (userinfo) {
         this.userinfo = userinfo
       }
-      // console.log(this.userinfo)
     }
-  }
+}
+  // getWxLogin: function ({
+  //   encryptedData,
+  //   iv,
+  //   userinfo
+  // }) {
+  //   const self = this
+  //   wx.login({
+  //     success: function (loginResult) {
+  //       console.log('loginResult', loginResult)
+  //       var loginParams = {
+  //         code: loginResult.code,
+  //         encryptedData: encryptedData,
+  //         iv: iv
+  //       }
+  //       qcloud.setLoginUrl(config.loginUrl)
+  //       qcloud.requestLogin({
+  //         loginParams,
+  //         success () {
+  //           qcloud.request({
+  //             url: config.userUrl,
+  //             login: true,
+  //             success (userRes) {
+  //               showSuccess('登录成功')
+  //               wx.setStorageSync('userinfo', userRes.data.data)
+  //               self.userinfo = userRes.data.data
+  //               console.log(self.userinfo)
+  //             }
+  //           })
+  //         },
+  //         fail (error) {
+  //           showModal('登录失败', error.message)
+  //         }
+  //       })
+  //     },
+  //     fail: function (loginError) {
+  //       showModal('登录失败', loginError.message)
+  //     }
+  //   })
+  // },
+  // login (e) {
+  //   const self = this
+  //   // 查看是否授权
+  //   wx.getSetting({
+  //     success: function (res) {
+  //       // 授权信息里有用户信息
+  //       if (res.authSetting['scope.userInfo']) {
+  //         // 检查用户登录是否过期
+  //         wx.checkSession({
+  //           success: function () {
+  //             // 没过期 直接成功
+  //             showSuccess('登录成功')
+  //           },
+  //           fail: function () {
+  //             // 过期了 重新登录 先清楚登录的状态
+  //             qcloud.clearSession()
+  //             // 登录态已过期，需重新登录
+  //             // 登录需要的加密信息
+  //             var options = {
+  //               encryptedData: e.mp.detail.encryptedData,
+  //               iv: e.mp.detail.iv,
+  //               userinfo: e.mp.detail.userInfo
+  //             }
+  //             self.getWxLogin(options)
+  //           }
+  //         })
+  //       } else {
+  //         showModal('用户未授权', e.mp.detail.errMsg)
+  //       }
+  //     }
+  //   })
+  // let user = wx.getStorageSync('userinfo')
+  // const self = this
+  // if (!user) {
+  //   qcloud.setLoginUrl(config.loginUrl)
+  //   qcloud.login({
+  //     success: function (userinfo) {
+  //       qcloud.request({
+  //         url: config.userUrl,
+  //         login: true,
+  //         success (userRes) {
+  //           showSuccess('登录成功')
+  //           wx.setStorageSync('userinfo', userRes.data.data)
+  //           self.userinfo = userRes.data.data
+  //         }
+  //       })
+  //     }
+  //   })
+  // }
+  //   }
+  // },
+  // onShow () {
+  //   // console.log(123)
+  //   let userinfo = wx.getStorageSync('userinfo')
+  //   // console.log([userinfo])
+  //   if (userinfo) {
+  //     this.userinfo = userinfo
+  //   }
+  //   // console.log(this.userinfo)
+  // }
+  // }
 </script>
 
 <style>
