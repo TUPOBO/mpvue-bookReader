@@ -2,7 +2,6 @@
   "pages": [
     "pages/book/main",
     "pages/me/main",
-    "pages/comments/main",
     "pages/detail/main"
   ],
   "window": {
@@ -19,12 +18,6 @@
         "text": "图书",
         "iconPath": "static/img/book.png",
         "selectedIconPath": "static/img/book-active.png"
-      },
-      {
-        "pagePath": "pages/comments/main",
-        "text": "评论",
-        "iconPath": "static/img/todo.png",
-        "selectedIconPath": "static/img/todo-active.png"
       },
       {
         "pagePath": "pages/me/main",
